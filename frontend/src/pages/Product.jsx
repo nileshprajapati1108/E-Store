@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Product = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
@@ -25,7 +27,7 @@ const Product = () => {
   const fetchProduct = async () => {
     try {
       setLoading(true);
-      const res = await axios.get("http://localhost:3000/api/product/all");
+      const res = await axios.get(`${API_URL}/api/product/all`);
       setProductList(res.data.products || []);
       setFilteredProducts(res.data.products || []);
       
@@ -43,7 +45,7 @@ const Product = () => {
     const userId = localStorage.getItem("userId");
     if (!userId) return;
     try {
-      const res = await axios.get(`http://localhost:3000/api/wishlist/${userId}`);
+      const res = await axios.get(`${API_URL}/api/wishlist/${userId}`);
       if (res.data.success) {
         const wishlistProductIds = res.data.wishlist.map(item => item.productId?._id);
         setWishlistItems(wishlistProductIds);
@@ -122,7 +124,7 @@ const Product = () => {
       return;
     }
     try {
-      const res = await axios.post("http://localhost:3000/api/cart/add", {
+      const res = await axios.post(`${API_URL}/api/cart/add`, {
         productId,
         productPrice,
         userId: localStorage.getItem("userId"),
@@ -145,7 +147,7 @@ const Product = () => {
       return;
     }
     try {
-      const res = await axios.post("http://localhost:3000/api/wishlist/add", {
+      const res = await axios.post(`${API_URL}/api/wishlist/add`, {
         productId,
         userId: localStorage.getItem("userId"),
       });
@@ -163,10 +165,10 @@ const Product = () => {
   const handleRemoveFromWishlist = async (productId) => {
     const userId = localStorage.getItem("userId");
     try {
-      const res = await axios.get(`http://localhost:3000/api/wishlist/${userId}`);
+      const res = await axios.get(`${API_URL}/api/wishlist/${userId}`);
       const wishlistItem = res.data.wishlist.find(item => item.productId?._id === productId);
       if (wishlistItem) {
-        await axios.delete(`http://localhost:3000/api/wishlist/remove/${wishlistItem._id}`);
+        await axios.delete(`${API_URL}/api/wishlist/remove/${wishlistItem._id}`);
         setWishlistItems(wishlistItems.filter(id => id !== productId));
         showToast("Removed from wishlist", "success");
       }
@@ -525,7 +527,7 @@ const Product = () => {
                     <Link to={`/product/${item._id}`} className="text-decoration-none">
                       <div className="bg-light p-3 text-center product-img-wrapper">
                         <img
-                          src={item.img?.startsWith("http") ? item.img : `http://localhost:3000${item.img}`}
+                          src={item.img?.startsWith("http") ? item.img : `${API_URL}${item.img}`}
                           className="img-fluid product-img"
                           alt={item.name}
                           style={{ height: "160px", objectFit: "contain" }}
@@ -599,7 +601,7 @@ const Product = () => {
                       <div className="col-md-3">
                         <Link to={`/product/${item._id}`} className="d-block bg-light rounded-3 p-3 text-center">
                           <img
-                            src={item.img?.startsWith("http") ? item.img : `http://localhost:3000${item.img}`}
+                            src={item.img?.startsWith("http") ? item.img : `${API_URL}${item.img}`}
                             alt={item.name}
                             className="img-fluid"
                             style={{ maxHeight: "140px", objectFit: "contain" }}

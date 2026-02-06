@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -28,7 +30,7 @@ const ProductDetail = () => {
 
   const fetchProduct = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/product/${id}`);
+      const response = await fetch(`${API_URL}/api/product/${id}`);
       const data = await response.json();
       if (data.success) {
         setProduct(data.product);
@@ -43,7 +45,7 @@ const ProductDetail = () => {
 
   const fetchReviews = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/reviews/${id}`);
+      const response = await fetch(`${API_URL}/api/reviews/${id}`);
       const data = await response.json();
       if (data.success) {
         setReviews(data.reviews);
@@ -55,7 +57,7 @@ const ProductDetail = () => {
 
   const fetchRelatedProducts = async (category) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/products/search?category=${category}`);
+      const response = await fetch(`${API_URL}/api/products/search?category=${category}`);
       const data = await response.json();
       if (data.success) {
         setRelatedProducts(data.products.filter((p) => p._id !== id).slice(0, 4));
@@ -67,7 +69,7 @@ const ProductDetail = () => {
 
   const checkWishlist = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/wishlist/check/${userId}/${id}`);
+      const response = await fetch(`${API_URL}/api/wishlist/check/${userId}/${id}`);
       const data = await response.json();
       if (data.success) {
         setInWishlist(data.inWishlist);
@@ -86,14 +88,14 @@ const ProductDetail = () => {
 
     try {
       if (inWishlist) {
-        await fetch(`http://localhost:3000/api/wishlist/remove/${wishlistItemId}`, {
+        await fetch(`${API_URL}/api/wishlist/remove/${wishlistItemId}`, {
           method: "DELETE",
         });
         setInWishlist(false);
         setWishlistItemId(null);
         showToast("Removed from wishlist", "success");
       } else {
-        const response = await fetch("http://localhost:3000/api/wishlist/add", {
+        const response = await fetch(`${API_URL}/api/wishlist/add`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ userId, productId: id }),
@@ -117,7 +119,7 @@ const ProductDetail = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/cart/add", {
+      const response = await fetch(`${API_URL}/api/cart/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -151,7 +153,7 @@ const ProductDetail = () => {
     }
 
     try {
-      const response = await fetch("http://localhost:3000/api/review/add", {
+      const response = await fetch(`${API_URL}/api/review/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -261,7 +263,7 @@ const ProductDetail = () => {
                 <i className={`fa-${inWishlist ? "solid" : "regular"} fa-heart`}></i>
               </button>
               <img
-                src={product.img?.startsWith("http") ? product.img : `http://localhost:3000${product.img}`}
+                src={product.img?.startsWith("http") ? product.img : `${API_URL}${product.img}`}
                 alt={product.name}
                 className="w-100"
                 style={{ height: "450px", objectFit: "contain", padding: "2rem" }}
@@ -545,7 +547,7 @@ const ProductDetail = () => {
                 <Link to={`/product/${relProduct._id}`} className="text-decoration-none">
                   <div className="card card-product h-100">
                     <img
-                      src={relProduct.img?.startsWith("http") ? relProduct.img : `http://localhost:3000${relProduct.img}`}
+                      src={relProduct.img?.startsWith("http") ? relProduct.img : `${API_URL}${relProduct.img}`}
                       className="card-img-top"
                       alt={relProduct.name}
                       style={{ height: "180px", objectFit: "contain", padding: "1rem" }}

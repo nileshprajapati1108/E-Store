@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Order = () => {
   const location = useLocation();
   const navigate = useNavigate();
@@ -21,7 +23,7 @@ const Order = () => {
   const fetchOrders = async () => {
     try {
       const userId = localStorage.getItem("userId");
-      const response = await axios.get(`http://localhost:3000/api/orders/${userId}`);
+      const response = await axios.get(`${API_URL}/api/orders/${userId}`);
       if (response.data.success) {
         setOrders(response.data.orders);
       }
@@ -168,7 +170,7 @@ const Order = () => {
                           src={
                             item.productId?.img?.startsWith("http")
                               ? item.productId.img
-                              : (item.productId?.img?.startsWith("http") ? item.productId.img : `http://localhost:3000${item.productId?.img}`)
+                              : (item.productId?.img?.startsWith("http") ? item.productId.img : `${API_URL}${item.productId?.img}`)
                           }
                           alt={item.productId?.name || "Product"}
                           className="rounded-3 me-3 bg-light"

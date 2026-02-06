@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const AdminDashboard = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -35,16 +37,16 @@ const AdminDashboard = () => {
     try {
       setLoading(true);
       const [statsRes, ordersRes, productsRes, salesRes, categoryRes, statusRes, allOrdersRes, usersRes, messagesRes, unreadRes] = await Promise.all([
-        axios.get("http://localhost:3000/api/admin/dashboard/stats"),
-        axios.get("http://localhost:3000/api/admin/dashboard/recent-orders"),
-        axios.get("http://localhost:3000/api/admin/dashboard/top-products"),
-        axios.get("http://localhost:3000/api/admin/dashboard/sales-chart"),
-        axios.get("http://localhost:3000/api/admin/dashboard/category-sales"),
-        axios.get("http://localhost:3000/api/admin/dashboard/order-status"),
-        axios.get("http://localhost:3000/api/admin/orders"),
-        axios.get("http://localhost:3000/api/admin/users"),
-        axios.get("http://localhost:3000/api/contact"),
-        axios.get("http://localhost:3000/api/contact/unread-count"),
+        axios.get(`${API_URL}/api/admin/dashboard/stats`),
+        axios.get(`${API_URL}/api/admin/dashboard/recent-orders`),
+        axios.get(`${API_URL}/api/admin/dashboard/top-products`),
+        axios.get(`${API_URL}/api/admin/dashboard/sales-chart`),
+        axios.get(`${API_URL}/api/admin/dashboard/category-sales`),
+        axios.get(`${API_URL}/api/admin/dashboard/order-status`),
+        axios.get(`${API_URL}/api/admin/orders`),
+        axios.get(`${API_URL}/api/admin/users`),
+        axios.get(`${API_URL}/api/contact`),
+        axios.get(`${API_URL}/api/contact/unread-count`),
       ]);
 
       if (statsRes.data.success) setStats(statsRes.data.stats);
@@ -66,7 +68,7 @@ const AdminDashboard = () => {
 
   const updateOrderStatus = async (orderId, newStatus) => {
     try {
-      await axios.put(`http://localhost:3000/api/admin/orders/${orderId}/status`, { status: newStatus });
+      await axios.put(`${API_URL}/api/admin/orders/${orderId}/status`, { status: newStatus });
       setAllOrders(allOrders.map(order => 
         order._id === orderId ? { ...order, status: newStatus } : order
       ));
@@ -106,7 +108,7 @@ const AdminDashboard = () => {
 
   const getImageUrl = (img) => {
     if (!img) return "";
-    return img.startsWith("http") ? img : `http://localhost:3000${img}`;
+    return img.startsWith("http") ? img : `${API_URL}${img}`;
   };
 
   const formatCurrency = (amount) => {
@@ -141,7 +143,7 @@ const AdminDashboard = () => {
     setMessageReply(message.adminReply || "");
     if (message.status === "unread") {
       try {
-        await axios.put(`http://localhost:3000/api/contact/${message._id}/status`, { status: "read" });
+        await axios.put(`${API_URL}/api/contact/${message._id}/status`, { status: "read" });
         setMessages(messages.map(m => m._id === message._id ? { ...m, status: "read" } : m));
         setUnreadCount(prev => prev - 1);
       } catch (error) {
@@ -153,7 +155,7 @@ const AdminDashboard = () => {
   const handleReplyMessage = async () => {
     if (!selectedMessage || !messageReply.trim()) return;
     try {
-      await axios.put(`http://localhost:3000/api/contact/${selectedMessage._id}/reply`, { reply: messageReply });
+      await axios.put(`${API_URL}/api/contact/${selectedMessage._id}/reply`, { reply: messageReply });
       setMessages(messages.map(m => m._id === selectedMessage._id ? { ...m, status: "replied", adminReply: messageReply } : m));
       setSelectedMessage({ ...selectedMessage, status: "replied", adminReply: messageReply });
       showToast("Reply sent successfully!", "success");
@@ -166,7 +168,7 @@ const AdminDashboard = () => {
   const handleDeleteMessage = async (messageId) => {
     if (!window.confirm("Are you sure you want to delete this message?")) return;
     try {
-      await axios.delete(`http://localhost:3000/api/contact/${messageId}`);
+      await axios.delete(`${API_URL}/api/contact/${messageId}`);
       setMessages(messages.filter(m => m._id !== messageId));
       if (selectedMessage?._id === messageId) setSelectedMessage(null);
       showToast("Message deleted!", "success");

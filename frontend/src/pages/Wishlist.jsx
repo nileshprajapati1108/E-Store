@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Wishlist = () => {
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -8,7 +10,7 @@ const Wishlist = () => {
 
   const fetchWishlist = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/wishlist/${userId}`);
+      const response = await fetch(`${API_URL}/api/wishlist/${userId}`);
       const data = await response.json();
       if (data.success) {
         setWishlist(data.wishlist);
@@ -27,7 +29,7 @@ const Wishlist = () => {
 
   const removeFromWishlist = async (itemId) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/wishlist/remove/${itemId}`, {
+      const response = await fetch(`${API_URL}/api/wishlist/remove/${itemId}`, {
         method: "DELETE",
       });
       const data = await response.json();
@@ -42,7 +44,7 @@ const Wishlist = () => {
 
   const addToCart = async (productId, price) => {
     try {
-      const response = await fetch("http://localhost:3000/api/cart/add", {
+      const response = await fetch(`${API_URL}/api/cart/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -177,7 +179,7 @@ const Wishlist = () => {
                 <Link to={`/product/${item.productId?._id}`}>
                   <div className="bg-light p-3">
                     <img
-                      src={item.productId?.img?.startsWith("http") ? item.productId.img : `http://localhost:3000${item.productId?.img}`}
+                      src={item.productId?.img?.startsWith("http") ? item.productId.img : `${API_URL}${item.productId?.img}`}
                       className="card-img-top"
                       alt={item.productId?.name}
                       style={{ height: "180px", objectFit: "contain" }}

@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const AdminProductManagement = () => {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
@@ -51,10 +53,10 @@ const AdminProductManagement = () => {
       }
 
       if (editingId) {
-        await axios.put(`http://localhost:3000/api/product/update/${editingId}`, formData);
+        await axios.put(`${API_URL}/api/product/update/${editingId}`, formData);
         showToast("Product updated successfully!", "success");
       } else {
-        await axios.post("http://localhost:3000/api/product/add", formData);
+        await axios.post(`${API_URL}/api/product/add`, formData);
         showToast("Product added successfully!", "success");
       }
 
@@ -105,7 +107,7 @@ const AdminProductManagement = () => {
   // GET ALL PRODUCTS
   const getAllProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/product/all");
+      const res = await axios.get(`${API_URL}/api/product/all`);
       if (res.data.success) {
         setProducts(res.data.products || []);
       }
@@ -122,7 +124,7 @@ const AdminProductManagement = () => {
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this product?")) return;
     try {
-      await axios.delete(`http://localhost:3000/api/product-remove/${id}`);
+      await axios.delete(`${API_URL}/api/product-remove/${id}`);
       getAllProducts();
       showToast("Product deleted successfully!", "success");
     } catch (err) {
@@ -141,7 +143,7 @@ const AdminProductManagement = () => {
     setBrand(product.brand || "");
     setStock(product.stock?.toString() || "100");
     setIsFeatured(product.isFeatured || false);
-    setImagePreview(product.img?.startsWith("http") ? product.img : `http://localhost:3000${product.img}`);
+    setImagePreview(product.img?.startsWith("http") ? product.img : `${API_URL}${product.img}`);
     setImageFile(null);
     setShowForm(true);
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -699,7 +701,7 @@ const AdminProductManagement = () => {
                         <td className="ps-4">
                           <div className="d-flex align-items-center gap-3">
                             <img
-                              src={p.img?.startsWith("http") ? p.img : `http://localhost:3000${p.img}`}
+                              src={p.img?.startsWith("http") ? p.img : `${API_URL}${p.img}`}
                               alt={p.name}
                               className="rounded-3 bg-light border"
                               style={{ width: "55px", height: "55px", objectFit: "contain", padding: "5px" }}
@@ -797,7 +799,7 @@ const AdminProductManagement = () => {
 
                         <div className="bg-light p-3">
                           <img
-                            src={p.img?.startsWith("http") ? p.img : `http://localhost:3000${p.img}`}
+                            src={p.img?.startsWith("http") ? p.img : `${API_URL}${p.img}`}
                             alt={p.name}
                             className="w-100"
                             style={{ height: "120px", objectFit: "contain" }}

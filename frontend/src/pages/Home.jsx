@@ -2,12 +2,14 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:3000/api/product/all");
+      const res = await axios.get(`${API_URL}/api/product/all`);
       setFeaturedProducts(res.data.products?.slice(0, 4) || []);
     } catch (error) {
       console.log(error);
@@ -133,7 +135,7 @@ const Home = () => {
                   <div className="card card-product h-100">
                     <div className="position-relative">
                       <img
-                        src={product.img?.startsWith("http") ? product.img : `http://localhost:3000${product.img}`}
+                        src={product.img?.startsWith("http") ? product.img : `${API_URL}${product.img}`}
                         className="card-img-top"
                         alt={product.name}
                         style={{ height: "200px", objectFit: "contain", padding: "1rem", background: "#f8fafc" }}

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate, useLocation } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Navbar = () => {
   const navigate = useNavigate();
   const location = useLocation();
@@ -23,7 +25,7 @@ const Navbar = () => {
   const fetchCartCount = async () => {
     if (!userId || role !== "user") return;
     try {
-      const response = await fetch(`http://localhost:3000/api/cart/${userId}`);
+      const response = await fetch(`${API_URL}/api/cart/${userId}`);
       const data = await response.json();
       if (data.success) {
         setCartCount(data.cartItems.length);

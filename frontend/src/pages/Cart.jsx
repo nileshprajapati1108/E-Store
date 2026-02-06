@@ -2,6 +2,8 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from 'axios'
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Cart = () => {
   const navigate = useNavigate();
   const [cartItems, setCartItems] = useState([]);
@@ -14,7 +16,7 @@ const Cart = () => {
 
   const fetchCartItems = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/cart/${localStorage.getItem("userId")}`);
+      const response = await fetch(`${API_URL}/api/cart/${localStorage.getItem("userId")}`);
       const data = await response.json();
       if (data.success) {
         setCartItems(data.cartItems);
@@ -28,7 +30,7 @@ const Cart = () => {
 
   const fetchRemoveItem = async (itemId) => {
     try {
-      const response = await fetch(`http://localhost:3000/api/cart/remove/${itemId}`, { method: "DELETE" });
+      const response = await fetch(`${API_URL}/api/cart/remove/${itemId}`, { method: "DELETE" });
       const data = await response.json();
       if (data.success) {
         setCartItems((prevItems) => prevItems.filter((item) => item._id !== itemId));
@@ -43,7 +45,7 @@ const Cart = () => {
 
   const fetchClearCart = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/cart/clear/${localStorage.getItem("userId")}`, { method: "DELETE" });
+      const response = await fetch(`${API_URL}/api/cart/clear/${localStorage.getItem("userId")}`, { method: "DELETE" });
       const data = await response.json();
       if (data.success) {
         setCartItems([]);
@@ -77,7 +79,7 @@ const Cart = () => {
       );
       
       // API call to update
-      await fetch(`http://localhost:3000/api/cart/update/${itemId}`, {
+      await fetch(`${API_URL}/api/cart/update/${itemId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ quantity: newQuantity }),
@@ -99,7 +101,7 @@ const Cart = () => {
     setCouponError("");
     
     try {
-      const response = await fetch("http://localhost:3000/api/coupon/validate", {
+      const response = await fetch(`${API_URL}/api/coupon/validate`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -183,7 +185,7 @@ const Cart = () => {
     const totalAmount = Math.round(calculateTotal());
         try {
             // Create order via backend
-            const response = await axios.post('http://localhost:3000/create-order', {
+            const response = await axios.post(`${API_URL}/create-order`, {
                 amount: totalAmount, // Amount in rupees
                 currency: 'INR',
             });
@@ -207,7 +209,7 @@ const Cart = () => {
                             price: item.productPrice,
                         }));
 
-                        await axios.post('http://localhost:3000/api/orders/create', {
+                        await axios.post(`${API_URL}/api/orders/create`, {
                             userId: localStorage.getItem("userId"),
                             items: orderItems,
                             totalAmount: calculateTotal(),
@@ -321,7 +323,7 @@ const Cart = () => {
                   <div key={item._id} className={`cart-item ${index !== cartItems.length - 1 ? "border-bottom" : ""}`}>
                     <div className="d-flex align-items-center">
                       <img
-                        src={item.productId?.img?.startsWith("http") ? item.productId.img : `http://localhost:3000${item.productId?.img || ''}`}
+                        src={item.productId?.img?.startsWith("http") ? item.productId.img : `${API_URL}${item.productId?.img || ''}`}
                         alt={item.productId?.name || 'Product'}
                         className="cart-item-img bg-light"
                         style={{ objectFit: "contain", padding: "10px" }}

@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Profile = () => {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -37,7 +39,7 @@ const Profile = () => {
 
   const fetchUserMessages = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/contact/user/${encodeURIComponent(user.email)}`);
+      const response = await fetch(`${API_URL}/api/contact/user/${encodeURIComponent(user.email)}`);
       const data = await response.json();
       if (data.success) {
         setMessages(data.messages);
@@ -49,7 +51,7 @@ const Profile = () => {
 
   const fetchUserProfile = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/user/profile/${userId}`);
+      const response = await fetch(`${API_URL}/api/user/profile/${userId}`);
       const data = await response.json();
       if (data.success) {
         setUser(data.user);
@@ -73,7 +75,7 @@ const Profile = () => {
 
   const fetchUserOrders = async () => {
     try {
-      const response = await fetch(`http://localhost:3000/api/orders/${userId}`);
+      const response = await fetch(`${API_URL}/api/orders/${userId}`);
       const data = await response.json();
       if (data.success) {
         setOrders(data.orders);
@@ -86,7 +88,7 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch(`http://localhost:3000/api/user/profile/${userId}`, {
+      const response = await fetch(`${API_URL}/api/user/profile/${userId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 const Contact = () => {
   const [formData, setFormData] = useState({
     name: "",
@@ -22,7 +24,7 @@ const Contact = () => {
     setError("");
     
     try {
-      const response = await axios.post("http://localhost:3000/api/contact", formData);
+      const response = await axios.post(`${API_URL}/api/contact`, formData);
       if (response.data.success) {
         setSubmitted(true);
         setFormData({ name: "", email: "", subject: "", message: "" });
